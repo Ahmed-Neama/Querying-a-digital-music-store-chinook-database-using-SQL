@@ -1,0 +1,82 @@
+1- Query 1
+	
+SELECT A.ArtistId, A.NAME, COUNT(*) AS Songs	
+FROM Genre G	
+JOIN Track T	
+ON G.GenreId=T.GenreId	
+JOIN Album AL	
+ON AL.AlbumId=T.AlbumId	
+JOIN Artist A	
+ON A.ArtistId=AL.ArtistId	
+WHERE G.NAME='Rock'	
+GROUP BY 1,2	
+ORDER BY 3 DESC	
+LIMIT 10;	
+
+
+
+2- Query 2
+
+SELECT C.CustomerId,(C.FirstName || ' ' || C.LastName) AS Customer_Name , SUM(I.total) as Total_Money_Spent
+FROM Customer C 
+JOIN Invoice I
+ON C.CustomerId=I.CustomerId
+GROUP BY 1,2
+ORDER BY 3 DESC
+LIMIT 10; 
+
+
+
+3- Query 3
+
+SELECT A.Name AS Artist_Name,SUM(IL.UnitPrice*IL.Quantity) AS Total_Money_Earned
+FROM Track T
+JOIN InvoiceLine IL
+ON IL.TrackId=T.TrackId
+JOIN Album AL
+ON AL.AlbumId=T.AlbumId
+JOIN Artist A
+ON A.ArtistId=AL.ArtistId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+
+
+4- Query 4
+
+CREATE VIEW V
+AS
+SELECT A.Name AS Artist_Name,SUM(IL.UnitPrice*IL.Quantity) AS Total_Money_Earned
+FROM Track T
+JOIN InvoiceLine IL
+ON IL.TrackId=T.TrackId
+JOIN Album AL
+ON AL.AlbumId=T.AlbumId
+JOIN Artist A
+ON A.ArtistId=AL.ArtistId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+
+SELECT A.Name AS Artist_Name, C.CustomerId, (C.FirstName || ' ' || C.LastName) AS Customer_Name,
+       SUM(IL.UnitPrice*IL.Quantity) AS Total_Money_Spent
+FROM Customer C
+JOIN Invoice I
+ON C.CustomerId=I.CustomerId
+JOIN InvoiceLine IL
+ON I.InvoiceId=IL.InvoiceId
+JOIN Track T
+ON IL.TrackId=T.TrackId
+JOIN Album AL
+ON AL.AlbumId=T.AlbumId
+JOIN Artist A
+ON A.ArtistId=AL.ArtistId
+WHERE A.Name=( SELECT Artist_Name 
+               FROM V
+              ) 
+GROUP BY 1,2,3
+ORDER BY 4 DESC
+LIMIT 10; 
+
+
